@@ -8,6 +8,7 @@ import (
 	"github.com/go-shiori/shiori/internal/database"
 	"github.com/go-shiori/shiori/internal/model"
 	"github.com/go-shiori/warc"
+	"github.com/go-shiori/shiori/internal/ldap"
 	cch "github.com/patrickmn/go-cache"
 )
 
@@ -23,6 +24,7 @@ type handler struct {
 	ArchiveCache *cch.Cache
 
 	templates map[string]*template.Template
+	LDAPClient   *ldap.Client
 }
 
 func (h *handler) prepareSessionCache() {

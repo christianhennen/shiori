@@ -7,30 +7,34 @@ import (
 	"time"
 
 	"github.com/go-shiori/shiori/internal/database"
+	"github.com/go-shiori/shiori/internal/ldap"
+	"github.com/go-shiori/shiori/pkg/warc"
 	"github.com/julienschmidt/httprouter"
 	cch "github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
 )
 
-// Config is parameter that used for starting web server
-type Config struct {
-	DB            database.DB
-	DataDir       string
-	ServerAddress string
-	ServerPort    int
+// Options is options for the server
+type Options struct {
+	DB         database.DB
+	DataDir    string
+	Address    string
+	Port       int
 	RootPath      string
+	LDAPClient *ldap.Client
 }
 
 // ServeApp serves wb interface in specified port
-func ServeApp(cfg Config) error {
+func ServeApp(opts Options) error {
 	// Create handler
 	hdl := handler{
-		DB:           cfg.DB,
-		DataDir:      cfg.DataDir,
+		DB:           opts.DB,
+		DataDir:      opts.DataDir,
 		UserCache:    cch.New(time.Hour, 10*time.Minute),
 		SessionCache: cch.New(time.Hour, 10*time.Minute),
 		ArchiveCache: cch.New(time.Minute, 5*time.Minute),
 		RootPath:     cfg.RootPath,
+		LDAPClient:   opts.LDAPClient,
 	}
 
 	hdl.prepareSessionCache()
@@ -84,7 +88,7 @@ func ServeApp(cfg Config) error {
 	}
 
 	// Create server
-	url := fmt.Sprintf("%s:%d", cfg.ServerAddress, cfg.ServerPort)
+	url := fmt.Sprintf("%s:%d", opts.Address, opts.Port)
 	svr := &http.Server{
 		Addr:         url,
 		Handler:      router,

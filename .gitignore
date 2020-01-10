@@ -1,9 +1,11 @@
 # Exclude config file
 .vscode/
-*.toml
 
 # Exclude executable file
 /shiori*
 
 # Exclude development data
 /dev-data
+
+# Exclude certificates
+*.pem
