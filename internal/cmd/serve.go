@@ -21,7 +21,7 @@ func serveCmd() *cobra.Command {
 	cmd.Flags().IntP("port", "p", 8080, "Port used by the server")
 	cmd.Flags().StringP("address", "a", "", "Address the server listens to")
 	cmd.Flags().StringP("webroot", "r", "/", "Root path that used by server")
-	cmd.Flags().String("ldap", "", "Path to config file for connecting with LDAP server")
+	cmd.Flags().StringP("ldap", "", "", "Path to config file for connecting with LDAP server")
 
 	return cmd
 }

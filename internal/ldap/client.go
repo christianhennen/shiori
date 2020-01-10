@@ -53,14 +53,17 @@ func (cl *Client) Close() {
 }
 
 // Search searches for a username in LDAP server
-func (cl *Client) Search(username string, owner bool) (string, string, error) {
+func (cl *Client) Search(username string) (string, string, bool, error) {
 	loginField := cl.Config.Search.LoginField
-	searchGroup := cl.Config.Search.VisitorGroupDN
-	if owner {
-		searchGroup = cl.Config.Search.OwnerGroupDN
+  oDN, oLogin, oErr := cl.search(username, cl.Config.Search.OwnerGroupDN, loginField)
+	vDN, vLogin, vErr := cl.search(username, cl.Config.Search.VisitorGroupDN, loginField)
+	if oErr == nil {
+		return oDN, oLogin, true, nil
+	} else if vErr == nil {
+		return vDN, vLogin, false, nil
+	} else {
+		return "","",false,fmt.Errorf("User not found: %v", oErr)
 	}
-
-	return cl.search(username, searchGroup, loginField)
 }
 
 // VerifyDN connect, and verify the password with DN of identified user

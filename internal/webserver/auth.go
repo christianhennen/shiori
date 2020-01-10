@@ -16,7 +16,7 @@ func (h *handler) authUser(username, password string, ownerMode bool) (model.Acc
 		return h.authUserDatabase(username, password, ownerMode)
 	}
 
-	return h.authUserLDAP(username, password, ownerMode)
+	return h.authUserLDAP(username, password)
 }
 
 func (h *handler) authUserDatabase(username, password string, ownerMode bool) (model.Account, error) {
@@ -61,9 +61,9 @@ func (h *handler) authUserDatabase(username, password string, ownerMode bool) (m
 	return account, nil
 }
 
-func (h *handler) authUserLDAP(username, password string, ownerMode bool) (model.Account, error) {
+func (h *handler) authUserLDAP(username, password string) (model.Account, error) {
 	// Search account in LDAP
-	dn, username, err := h.LDAPClient.Search(username, ownerMode)
+	dn, username, ownerMode, err := h.LDAPClient.Search(username)
 	if err != nil {
 		return model.Account{}, err
 	}

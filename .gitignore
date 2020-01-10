@@ -1,11 +1,13 @@
-# Exclude config file
+# Exclude config files
 .vscode/
+/conf
 
 # Exclude executable file
 /shiori*
 
-# Exclude development data
-/dev-data
+# Exclude data folders
+/archive
+/thumb
 
 # Exclude certificates
 *.pem
