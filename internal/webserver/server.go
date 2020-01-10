@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-shiori/shiori/internal/database"
 	"github.com/go-shiori/shiori/internal/ldap"
-	"github.com/go-shiori/shiori/pkg/warc"
 	"github.com/julienschmidt/httprouter"
 	cch "github.com/patrickmn/go-cache"
 	"github.com/sirupsen/logrus"
@@ -33,7 +32,7 @@ func ServeApp(opts Options) error {
 		UserCache:    cch.New(time.Hour, 10*time.Minute),
 		SessionCache: cch.New(time.Hour, 10*time.Minute),
 		ArchiveCache: cch.New(time.Minute, 5*time.Minute),
-		RootPath:     cfg.RootPath,
+		RootPath:     opts.RootPath,
 		LDAPClient:   opts.LDAPClient,
 	}
 
@@ -50,7 +49,7 @@ func ServeApp(opts Options) error {
 
 	// jp here means "join path", as in "join route with root path"
 	jp := func(route string) string {
-		return path.Join(cfg.RootPath, route)
+		return path.Join(opts.RootPath, route)
 	}
 
 	router.GET(jp("/js/*filepath"), hdl.serveJsFile)
